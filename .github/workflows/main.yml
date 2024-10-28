@@ -1,0 +1,49 @@
+name: .NET CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      DOTNET_CLI_HOME: "C:\\Program Files\\dotnet"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build application
+        run: dotnet build --configuration Release
+
+      - name: Run tests
+        run: dotnet test --no-restore --configuration Release
+
+      - name: Publish application
+        run: dotnet publish --no-restore --configuration Release --output ./publish
+
+      - name: Deploy to Server
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            $credentials = New-Object System.Management.Automation.PSCredential($env:IIS_USERNAME, (ConvertTo-SecureString $env:IIS_PASSWORD -AsPlainText -Force))
+            New-PSDrive -Name X -PSProvider FileSystem -Root "\\new-vm\coreapp" -Persist -Credential $credentials
+            Copy-Item -Path './publish/*' -Destination 'X:\' -Force
+            Remove-PSDrive -Name X
+        env:
+          IIS_USERNAME: ${{ secrets.IIS_USERNAME }}
+          IIS_PASSWORD: ${{ secrets.IIS_PASSWORD }}
+
+  post-build:
+    runs-on: windows-latest
+    needs: build
+    if: success()
+    steps:
+      - name: Notification
+        run: echo 'Build, test, and publish successful!'
