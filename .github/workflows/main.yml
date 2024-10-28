@@ -34,9 +34,10 @@ jobs:
           azPSVersion: 'latest'
           inlineScript: |
             $credentials = New-Object System.Management.Automation.PSCredential("sahil", (ConvertTo-SecureString "Sahil1234567" -AsPlainText -Force))
-            New-PSDrive -Name new-vm -PSProvider FileSystem -Root "X:\coreapp" -Persist -Credential $credentials
+            # Use the correct network path for the shared folder
+            New-PSDrive -Name X -PSProvider FileSystem -Root "\\new-vm\coreapp" -Persist -Credential $credentials
             Copy-Item -Path './publish/*' -Destination 'X:\' -Force
-            Remove-PSDrive -Name new-vm
+            Remove-PSDrive -Name X
         env:
           IIS_USERNAME: sahil
           IIS_PASSWORD: Sahil1234567
