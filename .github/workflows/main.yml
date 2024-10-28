@@ -32,13 +32,13 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            $credentials = New-Object System.Management.Automation.PSCredential($env:IIS_USERNAME, (ConvertTo-SecureString $env:IIS_PASSWORD -AsPlainText -Force))
+            $credentials = New-Object System.Management.Automation.PSCredential(sahil, (ConvertTo-SecureString Sahil1234567 -AsPlainText -Force))
             New-PSDrive -Name X -PSProvider FileSystem -Root "\\new-vm\coreapp" -Persist -Credential $credentials
             Copy-Item -Path './publish/*' -Destination 'X:\' -Force
             Remove-PSDrive -Name X
         env:
-          IIS_USERNAME: ${{ secrets.IIS_USERNAME }}
-          IIS_PASSWORD: ${{ secrets.IIS_PASSWORD }}
+          IIS_USERNAME: sahil
+          IIS_PASSWORD: Sahil1234567
 
   post-build:
     runs-on: windows-latest
