@@ -34,7 +34,7 @@ jobs:
           azPSVersion: 'latest'
           inlineScript: |
             $credentials = New-Object System.Management.Automation.PSCredential("sahil", (ConvertTo-SecureString "Sahil1234567" -AsPlainText -Force))
-            New-PSDrive -Name X -PSProvider FileSystem -Root "\\sahil\coreapp" -Persist -Credential $credentials
+            New-PSDrive -Name X -PSProvider FileSystem -Root "\\20.5.160.28\coreapp" -Persist -Credential $credentials
             Copy-Item -Path './publish/*' -Destination 'X:\' -Force
             Remove-PSDrive -Name X
 
