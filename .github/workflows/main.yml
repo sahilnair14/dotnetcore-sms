@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: windows-latest
 
-    env:
-      DOTNET_CLI_HOME: "C:\\Program Files\\dotnet"
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,12 +35,20 @@ jobs:
         with:
           azPSVersion: 'latest'
           inlineScript: |
-            # Create credentials using GitHub secrets
-            $credentials = New-Object System.Management.Automation.PSCredential("${{ secrets.IIS_USERNAME }}", (ConvertTo-SecureString "${{ secrets.IIS_PASSWORD }}" -AsPlainText -Force))
+            # Define the network path and credentials
+            $networkPath = "\\new-vm\coreapp"
+            $username = "${{ secrets.IIS_USERNAME }}" # GitHub secret for the username
+            $password = "${{ secrets.IIS_PASSWORD }}" # GitHub secret for the password
             
-            # Map network drive
-            New-PSDrive -Name Y -PSProvider FileSystem -Root "\\new-vm\coreapp" -Persist -Credential $credentials
-            
+            # Create a secure string for the password
+            $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+
+            # Create a PSCredential object
+            $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
+
+            # Map the network drive
+            New-PSDrive -Name Y -PSProvider FileSystem -Root $networkPath -Persist -Credential $credentials
+
             # Copy files to the network drive
             Copy-Item -Path './publish/*' -Destination 'Y:\' -Force
             
