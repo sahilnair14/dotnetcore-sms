@@ -9,9 +9,6 @@ jobs:
   build:
     runs-on: self-hosted
 
-    env:
-      DOTNET_CLI_HOME: "C:\\Program Files\\dotnet"
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,27 +25,39 @@ jobs:
       - name: Publish application
         run: dotnet publish --no-restore --configuration Release --output ./publish
 
-      - name: Deploy to Server
-        shell: powershell
-        run: |
-          # Create credential object for the network drive
-          $username = "${{ secrets.IIS_USERNAME }}"
-          $password = ConvertTo-SecureString "${{ secrets.IIS_PASSWORD }}" -AsPlainText -Force
-          $credentials = New-Object System.Management.Automation.PSCredential($username, $password)
-
-          # Map the network drive with the specified path
-          New-PSDrive -Name Y -PSProvider FileSystem -Root "\\new-vm\coreapp" -Persist -Credential $credentials
-
-          # Copy the published files to the mapped network drive
-          Copy-Item -Path './publish/*' -Destination 'Y:\' -Recurse -Force
-
-          # Remove the mapped network drive
-          Remove-PSDrive -Name Y
-
-  post-build:
+  deploy:
     runs-on: self-hosted
     needs: build
     if: success()
     steps:
+      - name: Deploy to Server
+        uses: azure/powershell@v1
+        with:
+          azPSVersion: 'latest'
+          inlineScript: |
+            # Define the network path and credentials
+            $networkPath = "\\new-vm\coreapp"
+            $username = "${{ secrets.IIS_USERNAME }}" # GitHub secret for the username
+            $password = "${{ secrets.IIS_PASSWORD }}" # GitHub secret for the password
+            
+            # Create a secure string for the password
+            $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+
+            # Create a PSCredential object
+            $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
+
+            # Define the path to the published files
+            $sourcePath = "./publish/*"
+
+            # Copy files to the network path directly using credentials
+            $session = New-PSSession -ComputerName "new-vm" -Credential $credentials
+            Invoke-Command -Session $session -ScriptBlock {
+              param($sourcePath, $destinationPath)
+              Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse -Force
+            } -ArgumentList $sourcePath, $networkPath
+
+            # Clean up session
+            Remove-PSSession -Session $session
+
       - name: Notification
-        run: echo 'Build, test, and publish successful!'
+        run: echo 'Deployment successful!'
