@@ -49,7 +49,7 @@ jobs:
             $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
 
             # Create a session to the remote machine
-            $session = New-PSSession -ComputerName "new-vm" -Credential $credentials -UseSSL
+            $session = New-PSSession -ComputerName "20.5.160.28" -Credential $credentials -UseSSL
 
             # Define the path to the published files
             $sourcePath = Join-Path -Path $PSScriptRoot -ChildPath "publish/*"
