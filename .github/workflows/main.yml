@@ -16,10 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Publish application
-        run: dotnet publish --no-restore --configuration Release --output ./publish
-  
-
       - name: Restore dependencies
         run: dotnet restore
 
@@ -37,15 +33,19 @@ jobs:
         with:
           azPSVersion: 'latest'
           inlineScript: |
-            Test-NetConnection -ComputerName 20.5.160.28 -Port 445
-            $credentials = New-Object System.Management.Automation.PSCredential("sahil", (ConvertTo-SecureString "Sahil1234567" -AsPlainText -Force))
-            # Use the correct network path for the shared folder
+            # Create credentials using GitHub secrets
+            $credentials = New-Object System.Management.Automation.PSCredential("${{ secrets.IIS_USERNAME }}", (ConvertTo-SecureString "${{ secrets.IIS_PASSWORD }}" -AsPlainText -Force))
+            
+            # Map network drive
             New-PSDrive -Name Y -PSProvider FileSystem -Root "\\new-vm\coreapp" -Persist -Credential $credentials
+            
+            # Copy files to the network drive
             Copy-Item -Path './publish/*' -Destination 'Y:\' -Force
+            
+            # Remove network drive
             Remove-PSDrive -Name Y
         env:
-          IIS_USERNAME: sahil
-          IIS_PASSWORD: Sahil1234567
+          DOTNET_CLI_HOME: "C:\\Program Files\\dotnet"
 
   post-build:
     runs-on: windows-latest
