@@ -35,28 +35,32 @@ jobs:
         with:
           azPSVersion: 'latest'
           inlineScript: |
-            # Define the network path and credentials
-            $networkPath = "\\new-vm\coreapp"
+            # Define the destination path on the remote server
+            $destinationPath = "C:\inetpub\wwwroot\coreapp" # Adjust as needed for your IIS application directory
+
+            # Define the username and password
             $username = "${{ secrets.IIS_USERNAME }}" # GitHub secret for the username
             $password = "${{ secrets.IIS_PASSWORD }}" # GitHub secret for the password
             
-            # Create a secure string for the password
+            # Convert the password to a secure string
             $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
 
-            # Create a PSCredential object
+            # Create a credential object
             $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
 
-            # Define the path to the published files
-            $sourcePath = "./publish/*"
-
-            # Copy files to the network path directly using credentials
+            # Create a session to the remote machine
             $session = New-PSSession -ComputerName "new-vm" -Credential $credentials
-            Invoke-Command -Session $session -ScriptBlock {
-              param($sourcePath, $destinationPath)
-              Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse -Force
-            } -ArgumentList $sourcePath, $networkPath
 
-            # Clean up session
+            # Define the path to the published files
+            $sourcePath = Join-Path -Path $PSScriptRoot -ChildPath "publish/*"
+
+            # Copy files to the remote destination path
+            Invoke-Command -Session $session -ScriptBlock {
+              param($source, $destination)
+              Copy-Item -Path $source -Destination $destination -Recurse -Force
+            } -ArgumentList $sourcePath, $destinationPath
+
+            # Remove the session
             Remove-PSSession -Session $session
 
       - name: Notification
