@@ -28,6 +28,11 @@ jobs:
       - name: Publish application
         run: dotnet publish --no-restore --configuration Release --output ./publish
 
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    if: success()
+    steps:
       - name: Deploy to Server
         uses: azure/powershell@v1
         with:
@@ -44,13 +49,6 @@ jobs:
             
             # Remove network drive
             Remove-PSDrive -Name Y
-        env:
-          DOTNET_CLI_HOME: "C:\\Program Files\\dotnet"
 
-  post-build:
-    runs-on: windows-latest
-    needs: build
-    if: success()
-    steps:
       - name: Notification
-        run: echo 'Build, test, and publish successful!'
+        run: echo 'Deployment successful!'
