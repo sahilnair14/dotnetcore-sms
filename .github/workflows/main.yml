@@ -37,7 +37,7 @@ jobs:
         with:
           azPSVersion: 'latest'
           inlineScript: |
-            Test-NetConnection -ComputerName 10.0.1.4 -Port 445
+            Test-NetConnection -ComputerName 20.5.160.28 -Port 445
             $credentials = New-Object System.Management.Automation.PSCredential("new-vm", (ConvertTo-SecureString "Sahil1234567" -AsPlainText -Force))
             # Use the correct network path for the shared folder
             New-PSDrive -Name Y -PSProvider FileSystem -Root "\\10.0.1.4\coreapp" -Persist -Credential $credentials
