@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
         run: dotnet publish --no-restore --configuration Release --output ./publish
 
   deploy:
-    runs-on: windows-latest
+    runs-on: self-hosted
     needs: build
     if: success()
     steps:
