@@ -46,14 +46,18 @@ jobs:
             # Create a PSCredential object
             $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
 
-            # Map the network drive
-            New-PSDrive -Name Y -PSProvider FileSystem -Root $networkPath -Persist -Credential $credentials
+            # Define the path to the published files
+            $sourcePath = "./publish/*"
 
-            # Copy files to the network drive
-            Copy-Item -Path './publish/*' -Destination 'Y:\' -Force
-            
-            # Remove network drive
-            Remove-PSDrive -Name Y
+            # Copy files to the network path directly using credentials
+            $session = New-PSSession -ComputerName "new-vm" -Credential $credentials
+            Invoke-Command -Session $session -ScriptBlock {
+              param($sourcePath, $destinationPath)
+              Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse -Force
+            } -ArgumentList $sourcePath, $networkPath
+
+            # Clean up session
+            Remove-PSSession -Session $session
 
       - name: Notification
         run: echo 'Deployment successful!'
