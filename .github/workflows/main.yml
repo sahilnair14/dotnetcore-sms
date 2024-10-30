@@ -49,16 +49,13 @@ jobs:
             $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
 
             # Create a session to the remote machine
-            $session = New-PSSession -ComputerName "20.5.160.28" -Credential $credentials -UseSSL
+            $session = New-PSSession -ComputerName "20.211.82.18" -Credential $credentials -UseSSL
 
             # Define the path to the published files
-            $sourcePath = Join-Path -Path $PSScriptRoot -ChildPath "publish/*"
+            $sourcePath = "${{ github.workspace }}\publish\*"
 
             # Copy files to the remote destination path
-            Invoke-Command -Session $session -ScriptBlock {
-              param($source, $destination)
-              Copy-Item -Path $source -Destination $destination -Recurse -Force
-            } -ArgumentList $sourcePath, $destinationPath
+            Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse -Force -ToSession $session
 
             # Remove the session
             Remove-PSSession -Session $session
