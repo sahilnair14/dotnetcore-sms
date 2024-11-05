@@ -49,7 +49,7 @@ jobs:
             $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
 
             # Create a session to the remote machine
-            $session = New-PSSession -ComputerName "20.211.82.18" -Credential $credentials -UseSSL
+            $session = New-PSSession -ComputerName "20.5.240.49" -Credential $credentials -UseSSL
 
             # Define the path to the published files
             $sourcePath = "${{ github.workspace }}\publish\*"
