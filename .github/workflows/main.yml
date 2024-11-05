@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'
+          dotnet-version: '8.0.x'  # Change this to use .NET 8.0
 
       - name: Restore NuGet Packages
         run: dotnet restore
@@ -28,10 +28,10 @@ jobs:
         run: dotnet publish -c Release -o publish
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3  # Updated to v3
+        uses: actions/upload-artifact@v3
         with:
           name: my-published-artifact
-          path: ./publish  # Path to the published output
+          path: ./publish
 
   deploy:
     runs-on: windows-latest
@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: Download Artifact
-        uses: actions/download-artifact@v3  # Also ensure this is updated
+        uses: actions/download-artifact@v3
         with:
           name: my-published-artifact
 
