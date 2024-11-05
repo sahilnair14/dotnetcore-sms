@@ -1,9 +1,9 @@
-name: CI/CD Pipeline for IIS
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main  # Change this to your main branch name
+      - main
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.0.x'  # Specify your .NET version
+          dotnet-version: '6.0.x'
 
       - name: Restore NuGet Packages
         run: dotnet restore
@@ -27,25 +27,25 @@ jobs:
       - name: Publish the Project
         run: dotnet publish -c Release -o publish
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3  # Updated to v3
         with:
-          name: published-artifact
-          path: publish  # Upload the publish directory as an artifact
+          name: my-published-artifact
+          path: ./publish  # Path to the published output
 
   deploy:
     runs-on: windows-latest
-    needs: build  # This job will only run after the build job completes successfully
+    needs: build
 
     steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v2
+      - name: Download Artifact
+        uses: actions/download-artifact@v3  # Also ensure this is updated
         with:
-          name: published-artifact
+          name: my-published-artifact
 
       - name: Deploy to IIS
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'Test'  # Name of your IIS application
-          publish-profile: ${{ secrets.IIS_PUBLISH_PROFILE }}  # Use a GitHub secret for secure credentials
-          package: ./publish  # Path to the downloaded published output
+          app-name: 'your-iis-app-name'
+          publish-profile: ${{ secrets.IIS_PUBLISH_PROFILE }}
+          package: './path-to-downloaded-artifact'
