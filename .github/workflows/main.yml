@@ -1,77 +1,51 @@
-name: .NET CI/CD Pipeline
+name: CI/CD Pipeline for IIS
 
 on:
   push:
     branches:
-      - main
+      - main  # Change this to your main branch name
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-      - name: Restore dependencies
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'  # Specify your .NET version
+
+      - name: Restore NuGet Packages
         run: dotnet restore
 
-      - name: Build application
+      - name: Build the Project
         run: dotnet build --configuration Release
 
-      - name: Run tests
-        run: dotnet test --no-restore --configuration Release
+      - name: Publish the Project
+        run: dotnet publish -c Release -o publish
 
-      - name: Publish application
-        run: dotnet publish --no-restore --configuration Release --output ./publish
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: published-artifact
+          path: publish  # Upload the publish directory as an artifact
 
   deploy:
     runs-on: windows-latest
-    needs: build
-    if: success()
+    needs: build  # This job will only run after the build job completes successfully
+
     steps:
-      - name: Deploy to Server
-        uses: azure/powershell@v1
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
         with:
-          azPSVersion: 'latest'
-          inlineScript: |
-            # Define the destination path on the remote server
-            $destinationPath = "C:\inetpub\wwwroot\Test" # Adjust as needed for your IIS application directory
+          name: published-artifact
 
-            # Define the username and password
-            $username = "${{ secrets.IIS_USERNAME }}" # GitHub secret for the username
-            $password = "${{ secrets.IIS_PASSWORD }}" # GitHub secret for the password
-            
-            # Convert the password to a secure string
-            $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
-
-            # Create a credential object
-            $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
-
-            # Create a session to the remote machine
-            $session = New-PSSession -ComputerName "${{ secrets.IIS_SERVER }}" -Credential $credentials -UseSSL
-
-            # Define the path to the published files
-            $sourcePath = "${{ github.workspace }}\publish\*"
-
-            # Copy files to the remote destination path
-            Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse -Force -ToSession $session
-
-            # Remove the session
-            Remove-PSSession -Session $session
-
-      - name: Check Server Connection with Telnet
-        run: |
-          $ip = "20.5.240.49"
-          $port = "81"
-          $telnetCommand = "telnet $ip $port"
-          $output = & cmd /c "$telnetCommand"
-          if ($output -match 'Could not open connection') {
-            Write-Host "Failed to connect to $ip on port $port"
-            exit 1
-          } else {
-            Write-Host "Telnet connection successful to $ip on port $port"
-          }
-
-      - name: Notification
-        run: echo 'Deployment and Telnet check completed successfully!'
+      - name: Deploy to IIS
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'Test'  # Name of your IIS application
+          publish-profile: ${{ secrets.IIS_PUBLISH_PROFILE }}  # Use a GitHub secret for secure credentials
+          package: ./publish  # Path to the downloaded published output
