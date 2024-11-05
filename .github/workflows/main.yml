@@ -36,7 +36,7 @@ jobs:
           azPSVersion: 'latest'
           inlineScript: |
             # Define the destination path on the remote server
-            $destinationPath = "C:\inetpub\wwwroot\coreapp" # Adjust as needed for your IIS application directory
+            $destinationPath = "C:\inetpub\wwwroot\Test" # Adjust as needed for your IIS application directory
 
             # Define the username and password
             $username = "${{ secrets.IIS_USERNAME }}" # GitHub secret for the username
@@ -49,7 +49,7 @@ jobs:
             $credentials = New-Object System.Management.Automation.PSCredential($username, $securePassword)
 
             # Create a session to the remote machine
-            $session = New-PSSession -ComputerName "20.5.240.49:81" -Credential $credentials -UseSSL
+            $session = New-PSSession -ComputerName "20.5.240.49" -Credential $credentials -UseSSL
 
             # Define the path to the published files
             $sourcePath = "${{ github.workspace }}\publish\*"
@@ -60,5 +60,18 @@ jobs:
             # Remove the session
             Remove-PSSession -Session $session
 
+      - name: Check Server Connection with Telnet
+        run: |
+          $ip = "20.5.240.49"
+          $port = "81"
+          $telnetCommand = "telnet $ip $port"
+          $output = & cmd /c "$telnetCommand"
+          if ($output -match 'Could not open connection') {
+            Write-Host "Failed to connect to $ip on port $port"
+            exit 1
+          } else {
+            Write-Host "Telnet connection successful to $ip on port $port"
+          }
+
       - name: Notification
-        run: echo 'Deployment successful!'
+        run: echo 'Deployment and Telnet check completed successfully!'
