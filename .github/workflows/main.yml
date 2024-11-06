@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Build and Deploy to IIS on Azure VM
 
 on:
   push:
@@ -10,42 +10,50 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '8.0.x'  # Change this to use .NET 8.0
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0'  # Use the appropriate version for your app
 
-      - name: Restore NuGet Packages
-        run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Build the Project
-        run: dotnet build --configuration Release
+    - name: Build the project
+      run: dotnet build --configuration Release
 
-      - name: Publish the Project
-        run: dotnet publish -c Release -o publish
+    - name: Publish the application
+      run: dotnet publish --configuration Release --output ./published
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: my-published-artifact
-          path: ./publish
+    - name: Archive the published application
+      run: |
+        Compress-Archive -Path ./published/* -DestinationPath ./artifact.zip
+
+    - name: Upload artifact for deployment
+      uses: actions/upload-artifact@v3
+      with:
+        name: my-app-artifact
+        path: ./artifact.zip
 
   deploy:
     runs-on: windows-latest
-    needs: build
+    needs: build  # This ensures the deploy job only runs after the build job succeeds
 
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: my-published-artifact
+    - name: Download artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: my-app-artifact
 
-      - name: Deploy to IIS
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'your-iis-app-name'
-          publish-profile: ${{ secrets.IIS_PUBLISH_PROFILE }}
-          package: './path-to-downloaded-artifact'
+    - name: Install Web Deploy
+      run: |
+        choco install webdeploy
+
+    - name: Deploy to IIS on Azure VM
+      run: |
+        msdeploy.exe -source:package=./artifact.zip -dest:auto,computerName=http://20.5.240.49:8172/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic,msdeploySite=Test
+      env:
+        USERNAME: ${{ secrets.AZURE_IIS_USERNAME }}
+        PASSWORD: ${{ secrets.AZURE_IIS_PASSWORD }}
