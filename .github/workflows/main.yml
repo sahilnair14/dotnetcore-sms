@@ -1,3 +1,5 @@
+name: Build and Deploy to IIS on Azure VM
+
 on:
   push:
     branches:
@@ -14,7 +16,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0'
+        dotnet-version: '6.0'  # Use the appropriate version for your app
 
     - name: Restore dependencies
       run: dotnet restore
@@ -37,14 +39,14 @@ jobs:
 
   deploy:
     runs-on: windows-latest
-    needs: build
+    needs: build  # This ensures the deploy job only runs after the build job succeeds
 
     steps:
     - name: Download artifact
       uses: actions/download-artifact@v3
       with:
         name: my-app-artifact
-        path: ./my-app-artifact  # Ensure it downloads to a known directory
+        path: ./my-app-artifact
 
     - name: Install Web Deploy
       run: |
@@ -60,7 +62,8 @@ jobs:
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
-            & $msdeployPath -verb:sync -source:package=$artifactPath -dest:auto,computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic,msdeploySite=Test -verbose
+            & $msdeployPath -verb:sync -source:package=$artifactPath `
+            -dest:contentPath="Test",computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic -verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
