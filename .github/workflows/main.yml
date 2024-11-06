@@ -16,7 +16,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0'  # Use the appropriate version for your app
+        dotnet-version: '6.0'  # Adjust for your app's version
 
     - name: Restore dependencies
       run: dotnet restore
@@ -39,7 +39,7 @@ jobs:
 
   deploy:
     runs-on: windows-latest
-    needs: build  # This ensures the deploy job only runs after the build job succeeds
+    needs: build
 
     steps:
     - name: Download artifact
@@ -49,10 +49,10 @@ jobs:
         path: ./my-app-artifact
 
     - name: Install Web Deploy
-      run: |
-        choco install webdeploy
+      run: choco install webdeploy
 
     - name: Deploy to IIS on Azure VM
+      shell: pwsh
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
         $artifactPath = "$env:GITHUB_WORKSPACE\my-app-artifact\artifact.zip"
@@ -62,9 +62,10 @@ jobs:
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
-            & $msdeployPath -verb:sync `
-              -source:package="$artifactPath" `
-              -dest:contentPath="Test",computerName="http://vm01/msdeploy.axd",username="$env:USERNAME",password="$env:PASSWORD",authType="Basic" `
+            & $msdeployPath `
+              -verb:sync `
+              -source:package=$artifactPath `
+              -dest:auto,computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic `
               -verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
