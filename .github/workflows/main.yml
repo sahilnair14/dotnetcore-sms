@@ -60,7 +60,7 @@ jobs:
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
-            & $msdeployPath -verb:sync -source:package=$artifactPath -dest:auto,computerName=http://20.5.240.49:8172/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic,msdeploySite=Test -verbose
+            & $msdeployPath -verb:sync -source:package=$artifactPath -dest:auto,computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic,msdeploySite=Test -verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
