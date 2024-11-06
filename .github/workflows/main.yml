@@ -65,7 +65,7 @@ jobs:
             & $msdeployPath `
               -verb:sync `
               -source:package=$artifactPath `
-              -dest:auto,computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic `
+              -dest:auto,computerName=http://20.5.240.49/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic `
               -verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
