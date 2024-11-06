@@ -62,8 +62,10 @@ jobs:
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
-            & $msdeployPath -verb:sync -source:package=$artifactPath `
-            -dest:contentPath="Test",computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic -verbose
+            & $msdeployPath -verb:sync `
+              -source:package="$artifactPath" `
+              -dest:contentPath="Test",computerName="http://vm01/msdeploy.axd",username="$env:USERNAME",password="$env:PASSWORD",authType="Basic" `
+              -verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
