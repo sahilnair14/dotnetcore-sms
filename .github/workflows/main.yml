@@ -79,6 +79,3 @@ jobs:
         } else {
           Write-Error "msdeploy.exe not found at $msdeployPath"
         }
-      env:
-        USERNAME: ${{ secrets.AZURE_IIS_USERNAME }}
-        PASSWORD: ${{ secrets.AZURE_IIS_PASSWORD }}
