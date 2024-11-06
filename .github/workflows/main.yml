@@ -52,7 +52,7 @@ jobs:
     - name: Deploy to IIS on Azure VM
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-        $artifactPath = "$(GITHUB_WORKSPACE)\my-app-artifact\artifact.zip"
+        $artifactPath = "$env:GITHUB_WORKSPACE\my-app-artifact\artifact.zip"
         
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
