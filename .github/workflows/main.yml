@@ -60,8 +60,10 @@ jobs:
         $username = "sahil"
         $password = "Sahil1234567"
         
-        Write-Output "Checking for msdeploy.exe at $msdeployPath"
-        Write-Output "Checking for artifact at $artifactPath"
+        # Write-Output "Checking for msdeploy.exe at $msdeployPath"
+        # Write-Output "Checking for artifact at $artifactPath"
+        Write-Output "Username: $username"
+        Write-Output "Artifact Path: $artifactPath"
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
