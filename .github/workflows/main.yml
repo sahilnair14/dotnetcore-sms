@@ -56,6 +56,9 @@ jobs:
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
         $artifactPath = "$env:GITHUB_WORKSPACE\my-app-artifact\artifact.zip"
+
+        $username = "${{ secrets.AZURE_IIS_USERNAME }}"
+        $password = "${{ secrets.AZURE_IIS_PASSWORD }}"
         
         Write-Output "Checking for msdeploy.exe at $msdeployPath"
         Write-Output "Checking for artifact at $artifactPath"
@@ -65,7 +68,7 @@ jobs:
             & $msdeployPath `
               -verb:sync `
               -source:package=$artifactPath `
-              -dest:auto,computerName=https://20.5.240.49:8172/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic `
+              -dest:auto,computerName=https://20.5.240.49:8172/msdeploy.axd,username=$username,password=$password,authType=Basic `
               -allowUntrusted `
               -verbose
           } else {
