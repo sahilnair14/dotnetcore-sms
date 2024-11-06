@@ -3,6 +3,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpClient("HttpClientWithSSLBypass")
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = 
+                            (httpRequestMessage, cert, cetChain, policyErrors) => true
+                    };
+                });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
