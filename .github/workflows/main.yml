@@ -16,7 +16,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0'  # Adjust for your app's version
+        dotnet-version: '8.0'  # Adjust for your app's version
 
     - name: Restore dependencies
       run: dotnet restore
@@ -65,7 +65,7 @@ jobs:
             & $msdeployPath `
               -verb:sync `
               -source:package=$artifactPath `
-              -dest:auto,computerName=http://vm01/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic `
+              -dest:auto,computerName=https://20.5.240.49:8172/msdeploy.axd,username=$env:USERNAME,password=$env:PASSWORD,authType=Basic `
               -verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
