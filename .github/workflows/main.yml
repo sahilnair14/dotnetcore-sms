@@ -57,7 +57,7 @@ jobs:
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
         $artifactPath = "$env:GITHUB_WORKSPACE\my-app-artifact\artifact.zip"
 
-        $username = "vm01\sahil"
+        $username = "sahil"
         $password = "Nair1234567890"
         
         # Write-Output "Checking for msdeploy.exe at $msdeployPath"
