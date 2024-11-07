@@ -55,9 +55,9 @@ jobs:
       shell: pwsh
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-        $artifactPath = "$env:GITHUB_WORKSPACE\my-app-artifact\artifact.zip"
+        $artifactPath = "C:\Users\sahil\Desktop\Pulish\artifact.zip.zip"
 
-        $username = "IUSR"
+        $username = "sahil"
         $password = "Nair1234567890"
         
         # Write-Output "Checking for msdeploy.exe at $msdeployPath"
@@ -70,7 +70,7 @@ jobs:
             & $msdeployPath `
               -verb:sync `
               -source:package=$artifactPath `
-              -dest:auto,computerName=https://20.5.240.49:8172/msdeploy.axd,username=$username,password=$password,authType=Basic `
+              -dest:contentPath="Test",computerName=https://20.5.240.49:8172/msdeploy.axd,username=$username,password=$password,authType=Basic `
               -allowUntrusted `
               -verbose
           } else {
