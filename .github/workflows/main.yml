@@ -16,7 +16,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.x'  # Adjust for .NET 6.x version
+        dotnet-version: '8.x'  # Specify your .NET version
 
     - name: Restore dependencies
       run: dotnet restore
@@ -46,7 +46,7 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: artifact
-        path: ./artifact
+        path: ./artifact  # Downloads to ./artifact directory
 
     - name: Install Web Deploy
       run: choco install webdeploy
@@ -55,11 +55,13 @@ jobs:
       shell: pwsh
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-        $artifactPath = "C:\Users\sahil\source\repos\dotnetcore-sms"
+        $artifactPath = "${{ github.workspace }}\artifact\artifact.zip"  # Path to the downloaded artifact
 
         $username = "sahil"
-        $password = "Nair1234567890"
-        
+        $password = "Nair1234567890"  # Replace with actual password
+        $destContentPath = "Test"
+        $computerName = "https://20.5.240.49:8172/msdeploy.axd"
+
         Write-Output "Username: $username"
         Write-Output "Artifact Path: $artifactPath"
 
@@ -68,7 +70,7 @@ jobs:
             & $msdeployPath `
               -verb:sync `
               -source:package=$artifactPath `
-              -dest:contentPath="Test",computerName="https://20.5.240.49:8172/msdeploy.axd",username=$username,password=$password,authType=Basic `
+              -dest:contentPath=$destContentPath,computerName=$computerName,username=$username,password=$password,authType=Basic `
               -allowUntrusted `
               -verbose
           } else {
