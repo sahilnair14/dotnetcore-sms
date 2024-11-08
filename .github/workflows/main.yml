@@ -57,18 +57,15 @@ jobs:
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
         $artifactPath = "${{ github.workspace }}\artifact\artifact.zip"  # Path to the downloaded artifact
 
-        $username = "sahil"
-        $password = "Nair1234567890"  # Replace with actual password
-
-        Write-Output "Username: $username"
+        Write-Output "Username: sahil"
         Write-Output "Artifact Path: $artifactPath"
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
             & $msdeployPath `
               -verb:sync `
-              -source:package=$artifactPath `
-              -dest:contentPath="Test",computerName=https://20.5.240.49:8172/msdeploy.axd,username=$username,password=$password,authType=Basic `
+              -source:package="$artifactPath" `
+              -dest:contentPath="Test",computerName="https://20.5.240.49:8172/msdeploy.axd",username="sahil",password="Nair1234567890",authType="Basic" `
               -allowUntrusted `
               -verbose
           } else {
