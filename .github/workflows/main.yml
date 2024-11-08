@@ -59,8 +59,6 @@ jobs:
 
         $username = "sahil"
         $password = "Nair1234567890"  # Replace with actual password
-        $destContentPath = "Test"
-        $serverUrl = "20.5.240.49:8172"
 
         Write-Output "Username: $username"
         Write-Output "Artifact Path: $artifactPath"
@@ -70,7 +68,7 @@ jobs:
             & $msdeployPath `
               -verb:sync `
               -source:package=$artifactPath `
-              -dest:contentPath=$destContentPath,computerName="https://$serverUrl/msdeploy.axd",username=$username,password=$password,authType=Basic `
+              -dest:contentPath="Test",computerName=https://20.5.240.49:8172/msdeploy.axd,username=$username,password=$password,authType=Basic `
               -allowUntrusted `
               -verbose
           } else {
