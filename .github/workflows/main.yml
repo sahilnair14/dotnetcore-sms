@@ -55,7 +55,7 @@ jobs:
       shell: pwsh
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-        $artifactPath = "C:\Users\sahil\Desktop\Pulish\artifact.zip"
+        $artifactPath = "C:\Users\sahil\source\repos\dotnetcore-sms\artifact.zip"
 
         $username = "sahil"
         $password = "Nair1234567890"
