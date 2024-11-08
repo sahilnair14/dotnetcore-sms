@@ -55,7 +55,7 @@ jobs:
       shell: pwsh
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-        $artifactPath = "C:\Users\sahil\source\repos\dotnetcore-sms\artifact\wwwroot"  # Ensure artifact path is correct
+        $artifactPath = "${{ github.workspace }}\artifact\artifact.zip"
 
         Write-Output "Username: sahil"
         Write-Output "Artifact Path: $artifactPath"
@@ -64,7 +64,7 @@ jobs:
           if (Test-Path $artifactPath) {
             & $msdeployPath `
               -verb:sync `
-              -source:package=$artifactPath `
+              -source:package="$artifactPath" `
               -dest:contentPath="Test",computerName="https://20.5.240.49:8172/msdeploy.axd",username="sahil",password="Nair1234567890",authType="Basic" `
               -allowUntrusted `
               -verbose
