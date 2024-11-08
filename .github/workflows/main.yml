@@ -60,7 +60,7 @@ jobs:
         $username = "sahil"
         $password = "Nair1234567890"  # Replace with actual password
         $destContentPath = "Test"
-        $serverUrl = "https://20.5.240.49:8172/msdeploy.axd
+        $serverUrl = "https://20.5.240.49:8172/msdeploy.axd"
 
         Write-Output "Username: $username"
         Write-Output "Artifact Path: $artifactPath"
