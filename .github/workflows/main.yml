@@ -57,22 +57,17 @@ jobs:
       run: |
         $msdeployPath = "C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe"
         $artifactPath = "$env:GITHUB_WORKSPACE\artifact\artifact.zip"
-
         Write-Output "Username: sahil"
         Write-Output "Artifact Path: $artifactPath"
-
+        
+        # Check if msdeploy exists
         if (Test-Path $msdeployPath) {
+          # Check if the artifact exists
           if (Test-Path $artifactPath) {
             & "$msdeployPath" `
                -verb:sync `
                -source:package="$artifactPath" `
-               -dest:contentPath="C:\inetpub\wwwroot" `
-               -computerName:"https://vm01:8172/msdeploy.axd" `
-               -username="sahil" `
-               -password="Nair1234567890" `
-               -authType="Basic" `
-               -allowUntrusted `
-               -verbose
+               -dest:auto,computername="https://vm01:8172/msdeploy.axd",username="sahil",password="Nair1234567890",authType="Basic",allowUntrusted,verbose
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
