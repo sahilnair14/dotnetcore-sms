@@ -67,7 +67,7 @@ jobs:
             # Define the msdeploy arguments
             $msdeployArgs = @(
               "-source:package=$artifactPath"
-              "-dest:contentPath=C:\inetpub\wwwroot,computername=https://vm01:8172/msdeploy.axd,username=sahil,password=Nair1234567890,authType=Basic"
+              "-dest:contentPath=C:\inetpub\wwwroot,computername=https://20.5.240.49:8172/msdeploy.axd,username=sahil,password=Nair1234567890,authType=Basic"
               "-verb:sync"
               "-retryAttempts=2"
               "-disableLink:AppPoolExtension"
