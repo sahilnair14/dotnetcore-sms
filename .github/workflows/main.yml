@@ -50,7 +50,7 @@ jobs:
         path: ./artifact  # Downloads to ./artifact directory
 
     - name: Install Web Deploy
-      run: choco install webdeploy
+      run: choco install webdeploy --version 4.x
 
     - name: Deploy to IIS on Azure VM
       shell: pwsh
