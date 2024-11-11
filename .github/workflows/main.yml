@@ -50,7 +50,7 @@ jobs:
         path: ./artifact  # Downloads to ./artifact directory
 
     - name: Install Web Deploy
-      run: choco install webdeploy --version 4.x
+      run: choco install webdeploy 
 
     - name: Deploy to IIS on Azure VM
       shell: pwsh
@@ -67,7 +67,7 @@ jobs:
                -verb:sync `
                -source:package="$artifactPath" `
                -dest:contentPath="C:\inetpub\wwwroot" `
-               -computerName:"https://20.5.240.49:8172/msdeploy.axd" `
+               -computerName:"https://vm01:8172/msdeploy.axd" `
                -username="sahil" `
                -password="Nair1234567890" `
                -authType="Basic" `
