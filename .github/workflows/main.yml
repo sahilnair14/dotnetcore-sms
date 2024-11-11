@@ -62,16 +62,17 @@ jobs:
 
         if (Test-Path $msdeployPath) {
           if (Test-Path $artifactPath) {
-            & $msdeployPath `
-              -verb:sync `
-              -source:package="$artifactPath" `
-              -dest:contentPath="Test" `
-              -computerName:"https://20.5.240.49:8172/msdeploy.axd" `
-              -username="sahil" `
-              -password="Nair1234567890" `
-              -authType="Basic" `
-              -allowUntrusted `
-              -verbose
+            & "$msdeployPath" `
+               -verb:sync `
+               -source:package="$artifactPath" `
+               -dest:contentPath="Test" `
+               -computerName:"https://20.5.240.49:8172/msdeploy.axd" `
+               -username="sahil" `
+               -password="Nair1234567890" `
+               -authType="Basic" `
+               -allowUntrusted `
+               -verbose
+
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
