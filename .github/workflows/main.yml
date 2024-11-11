@@ -27,9 +27,11 @@ jobs:
     - name: Publish the project
       run: dotnet publish --configuration Release --output ./publish
 
-    - name: Create artifact.zip
+    - name: Create artifact directory
       run: |
+        New-Item -ItemType Directory -Path ./artifact
         Compress-Archive -Path ./publish/* -DestinationPath ./artifact/artifact.zip
+
 
     - name: Upload artifact for deployment
       uses: actions/upload-artifact@v3
