@@ -64,10 +64,22 @@ jobs:
         if (Test-Path $msdeployPath) {
           # Check if the artifact exists
           if (Test-Path $artifactPath) {
-            # Correct the destination format
-            $destArgs = "-dest:wmsvc=https://vm01:8172/msdeploy.axd,username=sahil,password=Nair1234567890,authType=Basic"
-            # Run msdeploy command with proper arguments
-            & "$msdeployPath" -verb:sync -source:package=$artifactPath $destArgs -verbose
+            # Define the msdeploy arguments as per official example
+            $msdeployArgs = @(
+              "-source:package=$artifactPath"
+              "-dest:auto"
+              "-dest:computername=https://vm01:8172/msdeploy.axd"
+              "-dest:username=sahil"
+              "-dest:password=Nair1234567890"
+              "-dest:authType=Basic"
+              "-dest:allowUntrusted"
+              "-verb:sync"
+              "-retryAttempts=2"
+              "-disableLink:AppPoolExtension"
+              "-disableLink:ContentExtension"
+              "-disableLink:CertificateExtension"
+            )
+            & "$msdeployPath" $msdeployArgs
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
