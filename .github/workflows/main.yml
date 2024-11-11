@@ -69,7 +69,7 @@ jobs:
                -verb:sync `
                -source:package="$artifactPath" `
                -dest:contentPath="Test" `
-               -computerName:"https://20.5.240.49:8172/msdeploy.axd" `
+               -computerName:"https://vm01:8172/msdeploy.axd" `
                -username="sahil" `
                -password="Nair1234567890" `
                -authType="Basic" `
