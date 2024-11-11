@@ -64,10 +64,10 @@ jobs:
         if (Test-Path $msdeployPath) {
           # Check if the artifact exists
           if (Test-Path $artifactPath) {
-            # Define the msdeploy arguments as per official example
+            # Define the msdeploy arguments
             $msdeployArgs = @(
               "-source:package=$artifactPath"
-              "-dest:computername=https://vm01:8172/msdeploy.axd,username=sahil,password=Nair1234567890,authType=Basic,allowUntrusted=true,verbose=true"
+              "-dest:computername=https://vm01:8172/msdeploy.axd,username=sahil,password=Nair1234567890,authType=Basic"
               "-verb:sync"
               "-retryAttempts=2"
               "-disableLink:AppPoolExtension"
