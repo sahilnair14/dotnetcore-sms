@@ -33,11 +33,12 @@ jobs:
         Compress-Archive -Path ./publish/* -DestinationPath ./artifact/artifact.zip
 
 
-    - name: Upload artifact for deployment
+    - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: artifact
-        path: ./artifact.zip
+       name: artifact
+       path: ./artifact/artifact.zip
+
 
   deploy:
     runs-on: windows-latest
