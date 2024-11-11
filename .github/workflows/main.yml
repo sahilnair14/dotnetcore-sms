@@ -32,13 +32,11 @@ jobs:
         New-Item -ItemType Directory -Path ./artifact
         Compress-Archive -Path ./publish/* -DestinationPath ./artifact/artifact.zip
 
-
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-       name: artifact
-       path: ./artifact/artifact.zip
-
+        name: artifact
+        path: ./artifact/artifact.zip
 
   deploy:
     runs-on: windows-latest
@@ -75,7 +73,6 @@ jobs:
                -authType="Basic" `
                -allowUntrusted `
                -verbose
-
           } else {
             Write-Error "Artifact not found at $artifactPath. Please check the download path and verify the artifact name."
           }
