@@ -67,12 +67,7 @@ jobs:
             # Define the msdeploy arguments as per official example
             $msdeployArgs = @(
               "-source:package=$artifactPath"
-              "-dest:auto"
-              "-dest:computername=https://vm01:8172/msdeploy.axd"
-              "-dest:username=sahil"
-              "-dest:password=Nair1234567890"
-              "-dest:authType=Basic"
-              "-dest:allowUntrusted"
+              "-dest:computername=https://vm01:8172/msdeploy.axd,username=sahil,password=Nair1234567890,authType=Basic,allowUntrusted=true,verbose=true"
               "-verb:sync"
               "-retryAttempts=2"
               "-disableLink:AppPoolExtension"
