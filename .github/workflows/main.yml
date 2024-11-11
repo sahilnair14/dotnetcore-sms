@@ -68,7 +68,7 @@ jobs:
             & "$msdeployPath" `
                -verb:sync `
                -source:package="$artifactPath" `
-               -dest:contentPath="Test" `
+               -dest:contentPath="C:\inetpub\wwwroot" `
                -computerName:"https://20.5.240.49:8172/msdeploy.axd" `
                -username="sahil" `
                -password="Nair1234567890" `
